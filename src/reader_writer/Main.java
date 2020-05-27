@@ -45,6 +45,7 @@ public class Main {
                 	//开始时间
                 	threadstemp.setBegintime(Integer.parseInt(threadsStrings[2]));
                 	//持续时间
+                	threadstemp.setLstime(Integer.parseInt(threadsStrings[3]));
                 	threadstemp.setLasttime(Integer.parseInt(threadsStrings[3]));
                 	threads.add(threadstemp);
                 }
@@ -66,15 +67,13 @@ public class Main {
 						threads.get(j).isOver()==false) {//他们没读完
 					
 					threads.get(j).setFlag(randw.reader(threads.get(j))); 
-					
-					if (threads.get(j).getBegintime()>=i&&
-							threads.get(j).getFlag() != 3) {
+//					System.out.println(threads.get(j).getNumber()+"  "+threads.get(j).getFlag());
+					if (threads.get(j).getLstime() - threads.get(j).getLasttime()==1) {
 						System.out.println("线程"+threads.get(j).getNumber()+"开始读取");
-						
 					}
 					 
 					if (threads.get(j).getFlag() == 2) {
-						//System.out.println("2");
+						
 					}
 					else if(threads.get(j).getFlag() == 1) {
 						System.out.println("线程"+threads.get(j).getNumber()+"读取完毕");
@@ -84,7 +83,7 @@ public class Main {
 						System.out.println(threads.get(j).getNumber()+"error");
 					}
 					else if(threads.get(j).getFlag() == 3) {
-						
+//						threads.get(j).setFlag(3);
 					}
 				}
 				else if(threads.get(j).getBegintime()<=i&&//如果当前时间大于等于开始时间
@@ -109,9 +108,9 @@ public class Main {
 						//System.out.println("error");
 					}
 					
-				}
-			}
+				}//else if
+			}//for内部
 			
-		}
+		}//for 外部
 	}
 }

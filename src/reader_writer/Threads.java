@@ -4,7 +4,8 @@ public class Threads {
 	private int number;
 	private boolean wr;// R为true
 	private int begintime;
-	private int lasttime;
+	private int lasttime;//剩余时间
+	private int lstime;//总共持续时间
 	private int flag = 0;// 用于检测现在读到哪里了
 	private boolean over = false;// 用于检测是否读完了
 
@@ -54,6 +55,14 @@ public class Threads {
 
 	public void setOver(boolean over) {
 		this.over = over;
+	}
+
+	public int getLstime() {
+		return lstime;
+	}
+
+	public void setLstime(int lstime) {
+		this.lstime = lstime;
 	}
 
 }
