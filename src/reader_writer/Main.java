@@ -56,6 +56,8 @@ public class Main {
 			// TODO: handle exception
 			System.out.println("error");
 		}
+		//导入完成
+		
 		int j=0;//检测队列
 		for (int i = 0; i<=30;i++) {
 			System.out.println("时间："+i);
@@ -65,7 +67,9 @@ public class Main {
 						threads.get(j).isWr()&&//且为读者
 						threads.get(j).getLasttime()>=0&&//且他们持续时间还是大于0（未完成）
 						threads.get(j).isOver()==false) {//他们没读完
-					
+					if (randw.writecount>0) {
+						continue;
+					}
 					threads.get(j).setFlag(randw.reader(threads.get(j))); 
 //					System.out.println(threads.get(j).getNumber()+"  "+threads.get(j).getFlag());
 					if (threads.get(j).getLstime() - threads.get(j).getLasttime()==1) {
@@ -90,7 +94,9 @@ public class Main {
 						threads.get(j).isWr()==false&&//是写者
 						threads.get(j).getLasttime()>=0&&//且他们持续时间还是大于0（未完成）
 						threads.get(j).isOver()==false) {//没写完
-					
+					if (randw.readcount>0) {
+						continue;
+					}
 					if (randw.readcount==0&&threads.get(j).getFlag()==0) {
 						System.out.println("线程"+threads.get(j).getNumber()+"开始写入");
 						
