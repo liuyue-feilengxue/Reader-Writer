@@ -2,12 +2,13 @@ package reader_writer;
 
 public class ReadersAndWriters {
 	int readcount = 0;
+	int writecount = 0;
 	Semaphore x = new Semaphore(1);
 	Semaphore wsem = new Semaphore(1);
 
 	/**
 	 * 如果是阻塞中，则会返回0，完成后返回1，如果是正在执行返回2
-	 * 
+	 * 返回3是正在写
 	 * @param threads
 	 * @return
 	 */
@@ -18,13 +19,17 @@ public class ReadersAndWriters {
 				readcount++;
 				if (readcount == 1) {
 					wsem.semWait(wsem);
+//					if(wsem.semWait(wsem)==false) {
+//						x.semSignal(x);
+//						return 3;
+//					}
 				}
 			} else {
 				return 0;
 			}
 			x.semSignal(x);
 		}
-		// System.out.println(wsem.count);
+		
 		// READUNIT
 		int lasttime = threads.getLasttime();
 		lasttime--;
@@ -52,26 +57,26 @@ public class ReadersAndWriters {
 	 * @return
 	 */
 	public int writer(Threads threads) {
-		if (threads.getFlag() == 0) {
-//			System.out.println(wsem.count);
-			if (wsem.semWait(wsem)) {// 不阻塞
-				// WRITEUNIT
-				int lasttime = threads.getLasttime();
-				lasttime--;
-				threads.setLasttime(lasttime);
-				if (lasttime != 0) {// 还在执行中
-					return 2;
-				}
-
-				wsem.semSignal(wsem);
-
-				return 1;
-			} else {
-				wsem.semSignal(wsem);
-				return 0;
+		//System.out.println(writecount);
+		if (wsem.semWait(wsem)//第一次
+				||threads.getFlag()==2) {//正在读
+			// WRITEUNIT
+			
+			int lasttime = threads.getLasttime();
+			lasttime--;
+			
+			threads.setLasttime(lasttime);
+			if (lasttime != 0) {// 还在执行中
+				return 2;
 			}
+			//writecount --;
+			//wsem.semSignal(wsem);//解开if语句的wait
+			wsem.semSignal(wsem);//解开真正的信号量
+			return 1;
 		} else {
+			wsem.semSignal(wsem);
 			return 0;
 		}
+		
 	}
 }

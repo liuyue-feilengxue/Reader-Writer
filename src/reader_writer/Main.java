@@ -8,7 +8,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-
+/**
+ * 
+ * @author 六月飞冷雪
+ *本代码仅仅是模拟读者写者问题，没有用到多线程等方法，仅供参考
+ *觉得有用不如给我点个星呗~
+ */
 public class Main {
 	
 	public static void main(String[] args) throws InterruptedException {
@@ -25,17 +30,21 @@ public class Main {
                 BufferedReader bufferedReader = new BufferedReader(read);
                 String lineTxt = null;
                 while((lineTxt = bufferedReader.readLine()) != null){
-//                    System.out.println(lineTxt);
-                	String[] threadsStrings =lineTxt.split(" ");
+                	
+                	String[] threadsStrings =lineTxt.split(" ");//
                 	
                 	Threads threadstemp = new Threads();
+                	//第几个进程（好像并没有什么用，反正下面用i就可以了）
                 	threadstemp.setNumber(Integer.parseInt(threadsStrings[0]));
+                	//读者还是写者
                 	if (threadsStrings[1].equals("R")) {
                 		threadstemp.setWr(true);
                 	}else {
 						threadstemp.setWr(false);
 					}
+                	//开始时间
                 	threadstemp.setBegintime(Integer.parseInt(threadsStrings[2]));
+                	//持续时间
                 	threadstemp.setLasttime(Integer.parseInt(threadsStrings[3]));
                 	threads.add(threadstemp);
                 }
@@ -53,37 +62,48 @@ public class Main {
 			for (j=0;j<threads.size();j++) {
 				if (threads.get(j).getBegintime()<=i&&//如果当前时间大于等于开始时间
 						threads.get(j).isWr()&&//且为读者
-						threads.get(j).getLasttime()>0) {//且他们持续时间还是大于0（未完成）
-					if (threads.get(j).getBegintime()==i) {
-						System.out.println("线程"+(j+1)+"开始读取");
-						threads.get(j).setFlag(0);
+						threads.get(j).getLasttime()>=0&&//且他们持续时间还是大于0（未完成）
+						threads.get(j).isOver()==false) {//他们没读完
+					
+					threads.get(j).setFlag(randw.reader(threads.get(j))); 
+					
+					if (threads.get(j).getBegintime()>=i&&
+							threads.get(j).getFlag() != 3) {
+						System.out.println("线程"+threads.get(j).getNumber()+"开始读取");
+						
 					}
-					threads.get(j).setFlag(randw.reader(threads.get(j)));  
+					 
 					if (threads.get(j).getFlag() == 2) {
 						//System.out.println("2");
 					}
 					else if(threads.get(j).getFlag() == 1) {
-						System.out.println("线程"+(j+1)+"读取完毕");
+						System.out.println("线程"+threads.get(j).getNumber()+"读取完毕");
+						threads.get(j).setOver(true);
 					}
 					else if (threads.get(j).getFlag() == 0) {
-						System.out.println("error");
+						System.out.println(threads.get(j).getNumber()+"error");
+					}
+					else if(threads.get(j).getFlag() == 3) {
+						
 					}
 				}
 				else if(threads.get(j).getBegintime()<=i&&//如果当前时间大于等于开始时间
 						threads.get(j).isWr()==false&&//是写者
-						threads.get(j).getLasttime()>0) {//且他们持续时间还是大于0（未完成）
+						threads.get(j).getLasttime()>=0&&//且他们持续时间还是大于0（未完成）
+						threads.get(j).isOver()==false) {//没写完
 					
 					if (randw.readcount==0&&threads.get(j).getFlag()==0) {
-						System.out.println("线程"+(j+1)+"开始写入");
-						threads.get(j).setFlag(0);
+						System.out.println("线程"+threads.get(j).getNumber()+"开始写入");
+						
 					}
 					threads.get(j).setFlag(randw.writer(threads.get(j)));
-					System.out.println("flag:"+threads.get(j).getFlag());
+					
 					if (threads.get(j).getFlag() == 2) {
-//						System.out.println("2");
+//						
 					}
 					else if(threads.get(j).getFlag() == 1) {
-						System.out.println("线程"+(j+1)+"写入完毕");
+						System.out.println("线程"+threads.get(j).getNumber()+"写入完毕");
+						threads.get(j).setOver(true);
 					}
 					else if (threads.get(j).getFlag() == 0) {
 						//System.out.println("error");
