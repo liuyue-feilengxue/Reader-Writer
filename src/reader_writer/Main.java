@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Scanner;
 
 import com.sun.org.apache.bcel.internal.generic.IfInstruction;
 /**
@@ -20,11 +21,22 @@ import com.sun.org.apache.bcel.internal.generic.IfInstruction;
  */
 public class Main {
 	
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws Exception {
 		List<Threads> threads = new ArrayList<Threads>();//存进程
 		
 		ReadersAndWriters randw = new ReadersAndWriters();
-		
+		System.out.println("自动读取目录下“进程.txt”文件");
+		System.out.print("如果确认，请输入回车，如果退出请输入“0”");
+		while(true) {
+			BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
+			String str = bf.readLine();
+			if (str.length()==0) {
+				break;
+			}
+			if (str.charAt(0)=='0') {
+				return;
+			}
+		}
 		try {
             String encoding="GBK";
             File file=new File("./进程.txt");
@@ -107,7 +119,6 @@ public class Main {
 					}
 					if (randw.readcount==0&&threads.get(j).getFlag()==0) {
 						System.out.println("线程"+threads.get(j).getNumber()+"开始写入");
-						
 					}
 					threads.get(j).setFlag(randw.writer(threads.get(j)));
 					
@@ -121,7 +132,7 @@ public class Main {
 					
 				}//else if
 			}//for内部
-			
+			System.out.println();
 			//结束进程
 			boolean flag = false;
 			for (j=0;j<threads.size();j++) {
