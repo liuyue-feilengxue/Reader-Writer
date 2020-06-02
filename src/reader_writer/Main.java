@@ -1,5 +1,7 @@
 package reader_writer;
 
+import java.awt.AWTException;
+import java.awt.Robot;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,6 +10,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+
+import com.sun.org.apache.bcel.internal.generic.IfInstruction;
 /**
  * 
  * @author 六月飞冷雪
@@ -23,7 +27,7 @@ public class Main {
 		
 		try {
             String encoding="GBK";
-            File file=new File("./test.txt");
+            File file=new File("./进程.txt");
             if(file.isFile() && file.exists()){ //判断文件是否存在
                 InputStreamReader read = new InputStreamReader(
                 new FileInputStream(file),encoding);//考虑到编码格式
@@ -34,7 +38,7 @@ public class Main {
                 	String[] threadsStrings =lineTxt.split(" ");//
                 	
                 	Threads threadstemp = new Threads();
-                	//第几个进程（好像并没有什么用，反正下面用i就可以了）
+                	//第几个进程
                 	threadstemp.setNumber(Integer.parseInt(threadsStrings[0]));
                 	//读者还是写者
                 	if (threadsStrings[1].equals("R")) {
@@ -63,6 +67,15 @@ public class Main {
 			System.out.println("时间："+i);
 			
 			for (j=0;j<threads.size();j++) {
+				if(threads.get(j).getBegintime()==i) {
+					//读者
+					if (threads.get(j).isWr()) {
+						System.out.println("进程"+threads.get(j).getNumber()+"发出读申请");
+					}
+					else {
+						System.out.println("进程"+threads.get(j).getNumber()+"发出写申请");
+					}
+				}
 				if (threads.get(j).getBegintime()<=i&&//如果当前时间大于等于开始时间
 						threads.get(j).isWr()&&//且为读者
 						threads.get(j).getLasttime()>=0&&//且他们持续时间还是大于0（未完成）
@@ -72,29 +85,24 @@ public class Main {
 					}
 					threads.get(j).setFlag(randw.reader(threads.get(j))); 
 //					System.out.println(threads.get(j).getNumber()+"  "+threads.get(j).getFlag());
+					
 					if (threads.get(j).getLstime() - threads.get(j).getLasttime()==1) {
 						System.out.println("线程"+threads.get(j).getNumber()+"开始读取");
 					}
 					 
-					if (threads.get(j).getFlag() == 2) {
-						
-					}
-					else if(threads.get(j).getFlag() == 1) {
+					if(threads.get(j).getFlag() == 1) {
 						System.out.println("线程"+threads.get(j).getNumber()+"读取完毕");
 						threads.get(j).setOver(true);
 					}
 					else if (threads.get(j).getFlag() == 0) {
 						System.out.println(threads.get(j).getNumber()+"error");
 					}
-					else if(threads.get(j).getFlag() == 3) {
-//						threads.get(j).setFlag(3);
-					}
 				}
 				else if(threads.get(j).getBegintime()<=i&&//如果当前时间大于等于开始时间
 						threads.get(j).isWr()==false&&//是写者
 						threads.get(j).getLasttime()>=0&&//且他们持续时间还是大于0（未完成）
 						threads.get(j).isOver()==false) {//没写完
-					if (randw.readcount>0) {
+					if (randw.readcount>0||(randw.writecount==1&&threads.get(j).getFlag()==0)) {
 						continue;
 					}
 					if (randw.readcount==0&&threads.get(j).getFlag()==0) {
@@ -103,20 +111,39 @@ public class Main {
 					}
 					threads.get(j).setFlag(randw.writer(threads.get(j)));
 					
-					if (threads.get(j).getFlag() == 2) {
-//						
-					}
-					else if(threads.get(j).getFlag() == 1) {
+					if(threads.get(j).getFlag() == 1) {
 						System.out.println("线程"+threads.get(j).getNumber()+"写入完毕");
 						threads.get(j).setOver(true);
 					}
 					else if (threads.get(j).getFlag() == 0) {
-						//System.out.println("error");
+						System.out.println("error");
 					}
 					
 				}//else if
 			}//for内部
 			
+			//结束进程
+			boolean flag = false;
+			for (j=0;j<threads.size();j++) {
+				if (threads.get(j).isOver()==false) {//还有没做完的
+					flag = false;
+					break;
+				}
+				else {
+					flag = true;
+				}
+			}
+			if (flag) {//如果都做完了
+				break;
+			}
+			//延迟一秒
+			try {
+				Robot  r   =   new   Robot();
+				r.delay(1000);
+			} catch (AWTException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
 		}//for 外部
 	}
 }
