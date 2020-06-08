@@ -16,8 +16,8 @@ import com.sun.org.apache.bcel.internal.generic.IfInstruction;
 /**
  * 
  * @author 六月飞冷雪
- *本代码仅仅是模拟读者写者问题，没有用到多线程等方法，仅供参考
- *觉得有用不如给我点个星呗~
+ * 本代码仅仅是模拟读者写者问题，没有用到多线程等方法，仅供参考
+ * 觉得有用不如给我点个星呗~
  */
 public class Main {
 	
@@ -64,6 +64,7 @@ public class Main {
                 	threadstemp.setLstime(Integer.parseInt(threadsStrings[3]));
                 	threadstemp.setLasttime(Integer.parseInt(threadsStrings[3]));
                 	threads.add(threadstemp);
+                	System.out.println("进程"+threadstemp.getNumber()+"创建完成");
                 }
                 read.close();
                 }
