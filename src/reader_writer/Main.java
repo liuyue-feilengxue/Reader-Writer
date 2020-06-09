@@ -25,7 +25,7 @@ public class Main {
 		List<Threads> threads = new ArrayList<Threads>();//存进程
 		
 		ReadersAndWriters randw = new ReadersAndWriters();
-		System.out.println("自动读取目录下“进程.txt”文件");
+		System.out.println("自动读取目录下“线程.txt”文件");
 		System.out.print("如果确认，请输入回车，如果退出请输入“0”");
 		while(true) {
 			BufferedReader bf = new BufferedReader(new InputStreamReader(System.in));
@@ -39,7 +39,7 @@ public class Main {
 		}
 		try {
             String encoding="GBK";
-            File file=new File("./进程.txt");
+            File file=new File("./线程.txt");
             if(file.isFile() && file.exists()){ //判断文件是否存在
                 InputStreamReader read = new InputStreamReader(
                 new FileInputStream(file),encoding);//考虑到编码格式
@@ -64,7 +64,7 @@ public class Main {
                 	threadstemp.setLstime(Integer.parseInt(threadsStrings[3]));
                 	threadstemp.setLasttime(Integer.parseInt(threadsStrings[3]));
                 	threads.add(threadstemp);
-                	System.out.println("进程"+threadstemp.getNumber()+"创建完成");
+                	System.out.println("线程"+threadstemp.getNumber()+"创建完成");
                 }
                 read.close();
                 }
@@ -83,10 +83,10 @@ public class Main {
 				if(threads.get(j).getBegintime()==i) {
 					//读者
 					if (threads.get(j).isWr()) {
-						System.out.println("进程"+threads.get(j).getNumber()+"发出读申请");
+						System.out.println("线程"+threads.get(j).getNumber()+"发出读申请");
 					}
 					else {
-						System.out.println("进程"+threads.get(j).getNumber()+"发出写申请");
+						System.out.println("线程"+threads.get(j).getNumber()+"发出写申请");
 					}
 				}
 				if (threads.get(j).getBegintime()<=i&&//如果当前时间大于等于开始时间
